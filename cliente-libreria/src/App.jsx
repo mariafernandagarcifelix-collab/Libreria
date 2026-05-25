@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './index.css';
 
-const CATALOG_URL = 'http://localhost:3001/api/libros';
-const ORDERS_URL  = 'http://localhost:3002/api/ordenes';
+const CATALOG_URL = 'https://servicio-catalogo-6zp3.onrender.com/api/libros';
+const ORDERS_URL  = 'https://servicio-ordenes-6yvn.onrender.com/api/ordenes';
 
 /* ─── Cover palettes ─── */
 const PALETTES = [
