@@ -1,0 +1,13 @@
+{
+  "name": "servicio-catalogo",
+  "version": "1.0.0",
+  "description": "Servicio de Catálogo",
+  "main": "catalogo.js",
+  "scripts": {
+    "start": "node catalogo.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.19.2"
+  }
+}

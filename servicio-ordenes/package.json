@@ -1,0 +1,14 @@
+{
+  "name": "servicio-ordenes",
+  "version": "1.0.0",
+  "description": "Servicio de Órdenes",
+  "main": "ordenes.js",
+  "scripts": {
+    "start": "node ordenes.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cors": "^2.8.6",
+    "express": "^4.19.2"
+  }
+}
