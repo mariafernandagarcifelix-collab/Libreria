@@ -71,6 +71,17 @@ app.post('/api/ordenes', async (req, res) => {
   }
 });
 
+// Middleware para manejar rutas no encontradas (404)
+app.use((req, res, next) => {
+  res.status(404).json({ error: `La ruta ${req.originalUrl} no existe en este servicio` });
+});
+
+// Middleware para manejar errores internos (500)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Error interno del servidor en el Servicio de Órdenes' });
+});
+
 app.listen(PORT, () => {
   console.log(`[Servicio de Órdenes] Corriendo en http://localhost:${PORT}`);
 });
