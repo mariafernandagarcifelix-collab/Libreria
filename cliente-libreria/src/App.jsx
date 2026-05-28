@@ -208,6 +208,87 @@ function Toast({ toast, onDismiss }) {
   );
 }
 
+/* ─── RawJsonTester ─── */
+function RawJsonTester() {
+  const [jsonText, setJsonText] = useState('{\n  "libroId": 99,\n  "cantidad": 1,\n  "cliente": "Lector Prueba"\n}');
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState(null);
+
+  const handleTest = async () => {
+    setLoading(true);
+    setResponse(null);
+    try {
+      const payload = JSON.parse(jsonText);
+      const res = await axios.post(ORDERS_URL, payload);
+      setResponse({ status: res.status, data: res.data });
+    } catch (err) {
+      if (err.response) {
+        setResponse({ status: err.response.status, data: err.response.data });
+      } else {
+        setResponse({ status: 'Error', data: err.message });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ marginTop: '4rem', padding: '2rem', background: 'linear-gradient(160deg, #2c1a0e 0%, #1a0d06 100%)', borderRadius: '12px', border: '1px solid var(--sepia)', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+      <h3 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.8rem', color: '#fdf8f0', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <span style={{ color: 'var(--caramel)' }}>{Icon.feather(20)}</span>
+        Simulador de Peticiones API
+      </h3>
+      <p style={{ color: 'var(--caramel)', marginBottom: '1.5rem', fontSize: '0.95rem', opacity: 0.9, lineHeight: 1.5 }}>
+        Usa este panel para enviar una petición cruda en formato JSON (como en Thunder Client o Postman). Intenta enviar un ID de libro que no existe (ej. <strong>99</strong>) para comprobar que el servicio responde con un <strong>Error 404</strong>.
+      </p>
+      
+      <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: '300px', display: 'flex', flexDirection: 'column' }}>
+          <label style={{ fontFamily: 'Inter', fontSize: '0.75rem', color: 'var(--caramel)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>Payload (JSON)</label>
+          <textarea
+            value={jsonText}
+            onChange={e => setJsonText(e.target.value)}
+            style={{ flex: 1, width: '100%', minHeight: '180px', background: 'rgba(0,0,0,0.4)', color: '#fdf8f0', fontFamily: 'monospace', padding: '1.2rem', border: '1px solid rgba(196,168,130,0.3)', borderRadius: '8px', fontSize: '0.9rem', resize: 'vertical', outline: 'none' }}
+          />
+          <button 
+            onClick={handleTest}
+            disabled={loading}
+            style={{ marginTop: '1rem', background: 'linear-gradient(to right, #a05a3c, #7b3f2d)', color: '#fdf8f0', padding: '0.85rem 1.5rem', border: 'none', borderRadius: '6px', fontWeight: '500', cursor: 'pointer', fontFamily: 'Inter', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}
+            onMouseOver={e => e.currentTarget.style.filter = 'brightness(1.1)'}
+            onMouseOut={e => e.currentTarget.style.filter = 'none'}
+          >
+            {loading ? <div className="spinner" /> : Icon.book(18)}
+            {loading ? 'Enviando...' : 'Enviar Petición POST'}
+          </button>
+        </div>
+        
+        <div style={{ flex: 1, minWidth: '300px', background: 'rgba(0,0,0,0.2)', padding: '1.2rem', border: '1px solid rgba(196,168,130,0.15)', borderRadius: '8px', display: 'flex', flexDirection: 'column' }}>
+          <h4 style={{ color: 'var(--caramel)', marginBottom: '1rem', fontFamily: 'Inter', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Respuesta del Servidor</h4>
+          {response ? (
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <div style={{ marginBottom: '1rem', display: 'inline-flex', alignItems: 'center', padding: '0.35rem 0.75rem', borderRadius: '4px', background: response.status >= 400 ? 'rgba(123, 63, 45, 0.2)' : 'rgba(30, 74, 56, 0.2)', border: `1px solid ${response.status >= 400 ? '#7b3f2d' : '#3a7a5a'}`, color: response.status >= 400 ? '#fca5a5' : '#86efac', fontSize: '0.85rem', fontWeight: '600', alignSelf: 'flex-start' }}>
+                Status: {response.status} {response.status === 404 && '(Not Found)'}
+              </div>
+              <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1rem', borderRadius: '6px', border: '1px solid rgba(196,168,130,0.1)', flex: 1 }}>
+                <pre style={{ margin: 0, color: '#fdf8f0', fontFamily: 'monospace', fontSize: '0.85rem', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                  {JSON.stringify(response.data, null, 2)}
+                </pre>
+              </div>
+            </div>
+          ) : (
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.1)', borderRadius: '6px', border: '1px dashed rgba(196,168,130,0.2)' }}>
+              <p style={{ color: 'var(--caramel)', opacity: 0.5, fontSize: '0.9rem', fontStyle: 'italic', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                {Icon.alert(24)}
+                Esperando petición...
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── App ─── */
 export default function App() {
   const [books, setBooks]               = useState([]);
@@ -245,6 +326,7 @@ export default function App() {
       if (res.status === 201) {
         showToast('success', `¡Orden creada! Total a pagar: $${res.data.orden.totalAPagar.toLocaleString('es-MX')} MXN`);
         setSelectedBook(null);
+        fetchBooks(); // Actualizar stock automáticamente
       }
     } catch (err) {
       const status = err.response?.status;
@@ -370,6 +452,9 @@ export default function App() {
             </p>
           </div>
         )}
+
+        {/* JSON Tester */}
+        <RawJsonTester />
       </main>
 
       {/* ── FOOTER ── */}

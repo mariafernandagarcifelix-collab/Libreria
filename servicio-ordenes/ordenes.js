@@ -42,6 +42,10 @@ app.post('/api/ordenes', async (req, res) => {
     // 3. Calcular el total a pagar y registrar la orden
     const totalAPagar = libro.precio * cantidad;
     
+    // Reducir el stock en el catálogo
+    const reducirStockUrl = `${CATALOGO_URL}/api/libros/${libroId}/reducir-stock`;
+    await axios.patch(reducirStockUrl, { cantidad });
+    
     const nuevaOrden = {
       idOrden: idOrdenContador++,
       cliente,

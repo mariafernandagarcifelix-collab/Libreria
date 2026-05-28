@@ -34,6 +34,24 @@ app.get('/api/libros/:id', (req, res) => {
   }
 });
 
+// Endpoint para reducir el stock de un libro
+app.patch('/api/libros/:id/reducir-stock', (req, res) => {
+  const libroId = parseInt(req.params.id, 10);
+  const { cantidad } = req.body;
+  const libro = libros.find(l => l.id === libroId);
+
+  if (!libro) {
+    return res.status(404).json({ error: 'Libro no encontrado en el catálogo' });
+  }
+
+  if (libro.stock < cantidad) {
+    return res.status(400).json({ error: 'Stock insuficiente' });
+  }
+
+  libro.stock -= cantidad;
+  res.status(200).json({ mensaje: 'Stock actualizado', libro });
+});
+
 // Middleware para manejar rutas no encontradas (404)
 app.use((req, res, next) => {
   res.status(404).json({ error: `La ruta ${req.originalUrl} no existe en este servicio` });
